@@ -206,6 +206,7 @@
     <Compile Include="Models\CreditCard.cs" />
     <Compile Include="Models\CreditCardModel.cs" />
     <Compile Include="Models\CreditCardType.cs" />
+    <Compile Include="Models\ValidateResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

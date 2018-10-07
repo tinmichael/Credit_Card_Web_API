@@ -57,7 +57,7 @@ namespace CreditCardWebAPI.Extensions
 
         }
 
-        public static CreditCardType GetCardType(string cardNumber)
+        public static CreditCardType GetCardType(this string cardNumber)
         {
             foreach (CardTypeInfo info in _cardTypeInfo)
             {
@@ -71,18 +71,59 @@ namespace CreditCardWebAPI.Extensions
 
         private static CardTypeInfo[] _cardTypeInfo =
         {
-          new CardTypeInfo("^(51|52|53|54|55)", 16, CreditCardType.MasterCard),
+          new CardTypeInfo("^(5)", 16, CreditCardType.MasterCard),
           new CardTypeInfo("^(4)", 16, CreditCardType.VISA),
-          new CardTypeInfo("^(4)", 13, CreditCardType.VISA),
-          new CardTypeInfo("^(34|37)", 15, CreditCardType.Amex),
-          new CardTypeInfo("^(6011)", 16, CreditCardType.Discover),
-          new CardTypeInfo("^(300|301|302|303|304|305|36|38)",
-                           14, CreditCardType.DinersClub),
-          new CardTypeInfo("^(3)", 16, CreditCardType.JCB),
-          new CardTypeInfo("^(2131|1800)", 15, CreditCardType.JCB),
-          new CardTypeInfo("^(2014|2149)", 15, CreditCardType.enRoute),
+          new CardTypeInfo("^(3)", 15, CreditCardType.Amex),
+          new CardTypeInfo("^(3)", 16, CreditCardType.JCB)
         };
 
+
+        public static bool IsValidVISA(this CreditCard visaCard)
+
+        {
+            
+                if (visaCard.ExpiryDate.HasValue)
+                {
+                    if (DateTime.IsLeapYear(visaCard.ExpiryDate.Value.Year))
+                    {
+                    return true;
+                    }
+                return false;
+                }
+            return false;
+            
+        }
+
+        public static bool IsValidMaster(this CreditCard masterCard)
+
+        {
+       
+            if (masterCard.ExpiryDate.HasValue)
+            {
+                if (masterCard.ExpiryDate.Value.Year.IsPrime())
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+
+        }
+
+        private static bool IsPrime(this int number)
+        {
+            if (number == 1) return false;
+            if (number == 2) return true;
+            //if (number == 6737626471) return true;
+
+            if (number % 2 == 0) return false;
+
+            for (int i = 3; i < number; i += 2)
+            {
+                if (number % i == 0) return false;
+            }
+            return true;
+        }
 
     }
 }

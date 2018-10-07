@@ -28,30 +28,48 @@ namespace CreditCardWebAPI.Controllers
         [ResponseType(typeof(CreditCard))]
         public IHttpActionResult GetCreditCard(string id)
         {
-            //CreditCard creditCard = db.CreditCards.Find(id);
-            //if (creditCard == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return Ok(creditCard);
 
             using (var context = new CreditCardModel())
             {
-              
+                var result = new ValidateResult();
 
                 if (CreditCardExtensions.IsCardNumberValid(id.NormalizeCardNumber()))
                 {
+                    var cardType = id.GetCardType();
 
-                    var creditCard = context.GetCreditCardByCardNumber(Convert.ToInt64(id));
-                    if (creditCard == null)
+                    if (cardType != CreditCardType.Unknown)
                     {
-                        return NotFound();
-                    }
-                    return Ok(creditCard);
-                }
-                return NotFound();
+                        var creditCard = context.GetCreditCardByCardNumber(Convert.ToInt64(id));
+                        result.cardType = cardType.ToString();
 
+                        if (creditCard == null)
+                        {
+                            result.result = Validation.DoesNotExist;
+                            return Ok(result);
+                        }
+
+                        if (cardType.Equals(CreditCardType.VISA))
+                        {
+
+                            result.result = (creditCard.IsValidVISA()) ? Validation.Valid : Validation.Invalid;
+                            return Ok(result);
+                        }
+
+                        if (cardType.Equals(CreditCardType.MasterCard))
+                        {
+                          
+                            result.result = (creditCard.IsValidMaster()) ? Validation.Valid : Validation.Invalid;
+                            return Ok(result);
+                        }
+                        result.result = Validation.Valid;
+                        return Ok(result);
+                    } 
+                    result.result = Validation.Invalid;
+                    result.cardType = cardType.ToString();
+                    return Ok(result);
+                } 
+                result.result = Validation.Invalid;
+                return Ok(result);
             }
         }
 

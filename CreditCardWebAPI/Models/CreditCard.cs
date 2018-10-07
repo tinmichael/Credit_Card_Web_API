@@ -9,10 +9,13 @@ namespace CreditCardWebAPI.Models
     [Table("CreditCard")]
     public partial class CreditCard
     {
+        [Key]
         public short ID { get; set; }
 
         public long? CardNumber { get; set; }
 
         public DateTime? ExpiryDate { get; set; }
+
+
     }
 }
