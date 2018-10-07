@@ -27,7 +27,7 @@ namespace CreditCardWebAPI.Models
 
         public string RegEx { get; set; }
         public int Length { get; set; }
-        public CreditCardType Type { get; set; }
+        public CreditCardType Type { get; set;}
 
 
     }
